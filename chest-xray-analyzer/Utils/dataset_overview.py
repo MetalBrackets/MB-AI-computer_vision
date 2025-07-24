@@ -17,18 +17,18 @@ def create_data_generator(data_dir, batch_size, color_mode, seed, shuffle, class
     )
     return data_generator
 
-# Afficher les formes (shape) des datasets
+# afficher les formes (shape) des datasets
 def print_shapes_and_labels(generator):
     # next(t) récupère le prochain lot de 32 images et labels (défini par batch_size)
     images, labels = next(generator)
     print(f"\nImages : {images.shape}")  # output (batch_size, height, width, channels)
     print(f"Labels : {labels.shape}")  # output (batch_size, num_classes)
     # print("Label one-hot :")
-    # Optionnel : afficher les labels de train
+    # optionnel : afficher les labels de train
     # print(labels) # output [[1. 0. 0.] [0. 1. 0.] [0. 0. 1.] ...]
 
 
-# Afficher le radio des classes de poumons dans chaque dataset (train, validation et test)
+# afficher le radio des classes de poumons dans chaque dataset (train, validation et test)
 def get_nb_img_by_classes(base_dir):
     nb_img_by_classe = {}
     # nb images classe normal
@@ -53,7 +53,7 @@ def get_nb_img_by_classes(base_dir):
 
 
 
-# Retourner class_name en inversant les clés et les valeurs
+# retourner class_name en inversant les clés et les valeurs
 def get_class_names(class_indices):
     class_names = {}
     # inverser les clés et les valeurs
@@ -63,7 +63,7 @@ def get_class_names(class_indices):
     return class_names
 
 
-# Afficher une grille de 4x4
+# afficher une grille de 4x4
 def plot_4_by_4_images(images, labels, class_names):
     fig = plt.figure(figsize=(10, 10))  # taille de la figure
     for i in range(4):
@@ -76,64 +76,4 @@ def plot_4_by_4_images(images, labels, class_names):
             ax.axis("off")
             plt.xticks(np.array([]))
             plt.yticks(np.array([]))
-    plt.show()
-
-
-# Afficher le nombre de couches dans le modèle
-def print_layer_info(model):
-    print(f"nb total de couches dans le modèle : {len(model.layers)}")
-    print(f"Détail :")
-    for i, layer in enumerate(model.layers):
-        layer_name = layer.__class__.__name__
-        if hasattr(layer, 'units'):
-            print(f"Layer {i+1} ({layer_name}) : {layer.units} neurones")
-        elif hasattr(layer, 'filters'):
-            print(f"Layer {i+1} ({layer_name}) : {layer.filters} filtres")
-        else:
-            print(f"Layer {i+1} ({layer_name})")
-
-# Calculer le temps d'entrainement du modèle
-def print_training_duration(total_start_time, total_end_time):
-    total_training_duration = total_end_time - total_start_time
-    minutes = int(total_training_duration // 60)
-    seconds = int(total_training_duration % 60)
-    print(f"\n⏱️ Temps total d'entraînement : {minutes} minutes et {seconds} secondes")
-    return total_training_duration
-
-
-#  Histogramme Empilé
-def plot_stacked_bar_chart(base_dirs, titles):
-    labels = ['Normal', 'Bacteria', 'Virus']
-    data = {label: [] for label in labels}
-
-    # Collect data for each label from each dataset
-    for directory in base_dirs.values():
-        nb_img_by_class = get_nb_img_by_classes(directory)
-        for label in labels:
-            data[label].append(nb_img_by_class['nb ' + label.lower()])
-
-    fig, ax = plt.subplots(figsize=(10, 7))
-    bottoms = np.zeros(len(titles))
-    
-    # Create the bar chart
-    for label, color in zip(labels, ['skyblue', 'salmon', 'limegreen']):
-        ax.bar(titles, data[label], bottom=bottoms, label=label, color=color)
-        bottoms += np.array(data[label])
-    
-    ax.set_ylabel('Nombre d\'images')
-    ax.set_title('Distribution des classes par dataset')
-    ax.legend()
-
-    plt.show()
-            
-def show_population_distribution(labels_list,labels_size ):
-    labels = labels_list
-    sizes = labels_size
-
-    fig, ax = plt.subplots()
-    ax.pie(sizes, labels=labels, autopct='%1.1f%%')
-    
-
-def display_img(img):
-    plt.imshow(img,cmap='gray')
     plt.show()
